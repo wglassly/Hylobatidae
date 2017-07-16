@@ -1,0 +1,241 @@
+{
+  "disease":{
+
+    "properties":{
+      "ID":["string||index","疾病ID","以DI开头，后续为6位数字"],
+      "name":["string||index","疾病名称", "疾病的标准名称，尽量采用官方名称"],
+      "eng_name":["string||index","疾病英文名称","疾病对应的标准英文名称"],
+      "synonym_name":["string||index","疾病别名","可以有多个别名，用||分开，暂只接受中文和英文别名"],
+      "icd10_code":["string||index","ICD10编码","最准确的ICD10编码，当无法对应到某一个具体编码，可以对应到编码段，如糖尿病为“E10-E14”"],
+      "detail":["string","疾病概述、定义","以糖尿病为例：“糖尿病（拉丁语：diabetes mellitus，缩写为DMs，简称diabetes）是一种代谢性疾病，它的特征是患者的血糖长期高于标准值[1]。"],
+      "inheritance":["string","遗传性","常规/性（x/y）染色体、线粒体，显性/隐性"],
+      "infectious":["string","传染性",""],
+      "prevalence":["string","患病率","在人群中的患病率情况，可以接受概率、文本等多种不同类型的描述"],
+      "etiology":["string","病因||发病机制","如糖尿病病因：“因为胰岛素是调节大多数组织细胞（主要是肌细胞和脂肪细胞，不包括中枢神经系统的神经....."],
+      "rating":["string","疾病分级/分期","如慢性肾脏病：“据GFR（Glomerular filtration rate，肾丝球过滤率）指标对慢性肾脏病情的划分[3]：第1期......"],
+      "treatment":["string","治疗","如:Fuchs角膜内皮营养不良西医治疗　\n\n治疗： 　　\n\r\n\t第1期无需治疗。有角膜点状变性而无角膜水肿的患者无症状。轻度角膜水肿能造成"],
+      "external_ids":["string","其他数据库的该疾病的链接","目前预定支持的外部链接知识库有：ICD10，ICD9，MeSH，Disease Ontolgy， malacards， UMLS， OMIM，Mediline、wikipedia格式为：“ICD-10：E10-E14  ICD-9：250MedlinePlus：00121EMedicine：med/546, emerg/134“,支持“-”，“，”，“、”分割符，以分割多个id"]
+    },
+
+    "relations":{
+
+      "occurs_in":{
+        "type":"directional",
+        "define":"发病人群",
+        "properties":{
+          "prevalence":["string","人群的患病率","可用易患、仅患"]
+        },
+        "end_node_type":["human_group"],
+        "comment":"链接到可能的发病人群分类节点（human_group），人群本体分类按照年龄、常见病史等分类。如“糖尿病”-->“糖调节受损史人群”，“高血压人群”"
+      },
+
+      "find_sites":{
+        "type":"directional",
+        "define":"发病部位",
+        "properties":{
+          "prime":["string","是否是主要发病部位",""],
+          "prevalence":["string","该类疾病在该部位发生病变的概率","可用易患、仅患"]
+        },
+        "end_node_type":["human_body"],
+        "comment":"链接到人的身体部位(human_body),如“急性肠炎”-->“肠道”"
+      },
+      "cause_diseases":{
+        "type":"directional",
+        "define":"导致其他疾病||并发症",
+        "properties":{  "prevalence":["string","该类疾病导致其他病变的概率","可用易患、仅患"] },
+        "end_node_type":["disease"],
+        "comment":"链接到其他疾病实体，如“糖尿病”-->“糖尿病足”"
+      },
+      "related_diseases":{
+        "type":"undirectional",
+        "define":"相关疾病",
+        "properties":{ },
+        "end_node_type":["disease"],
+        "comment":"链接到其他疾病实体，不确定具体原因、不明确因果关系的相关疾病"
+      },
+      "related_symptoms":{
+        "type":"directional",
+        "define":"相关症状",
+        "reversed_relation":{"symptom":"related_diseases"},
+        "properties":{},
+        "end_node_type":["symptom"],
+        "comment":"链接到症状实体"
+      },
+      "cure_drugs":{
+        "type":"directional",
+        "define":"治疗药物",
+        "properties":{
+
+        },
+        "end_node_type":["drug","ingredient","drug_product"],
+        "comment":"链接到药物实体"
+      },
+      "induced_by_drugs":{
+        "type":"directional",
+        "define":"药物导致疾病",
+        "properties":{
+
+        },
+        "end_node_type":["drug","ingredient","drug_product"],
+        "comment":"链接到药物实体"
+      },
+      "related_test":{
+        "type":"directional",
+        "define":"相关测试",
+        "properties":{
+
+        },
+        "end_node_type":["test"],
+        "comment":"链接到药物实体"
+      },
+      "related_genes":{
+        "type":"directional",
+        "define":"相关基因",
+        "properties":{
+
+        },
+        "end_node_type":["gene"],
+        "comment":"链接到基因实体"
+      },
+      "related_pathways":{
+        "type":"directional",
+        "define":"相关通路",
+        "properties":{
+
+        },
+        "end_node_type":["passway"],
+        "comment":"链接到通路实体"
+      },
+      "category":{
+      "type":"directional",
+      "define":"分类体系",
+      "properties":{
+
+      },
+      "end_node_type":["disease_category"],
+      "comment":"链接到疾病分类体系"}
+    }
+
+  },
+
+
+
+  "drug":{
+    "properties":{
+      "ID":["string","药品ID","以DR开头，后续为6位数字"],
+      "name":["string","药物名称","采用标准cfda通用名称"],
+      "eng_name":["string","药物英文名称","尽可能采用cfda采用的标准英文名称"],
+      "synonym_name":["string","药物别名","chinese or eng"],
+      "detail":["string","药物描述||药物介绍||药物说明",""],
+      "type":["string","药物类型","化学药品、中药、西药、辅料、中西医结合药"],
+      "usage":["string","使用方法",""],
+      "status":["string","药物批准状态",""],
+      "prescription":["string","是否是处方药",""],
+      "dose_form":["string","剂型","如有多种剂型用||分隔"],
+      "pharmacology":["string","药理学说明",""],
+      "food_interaction":["string","食物相互作用说明",""],
+    },
+    "relations":{
+      "has_ingredient":{
+        "type":"directional",
+        "define":"药物成分",
+        "properties":{
+          "major_compoment":["string","是否是主要成分",""]
+        },
+        "end_node_type":["ingredient"]
+      },
+      "indication":{
+        "type":"directional",
+        "define":"药物治疗",
+        "reversed_relation":{"disease":"cure_drugs","symptom":"cure_drugs"},
+        "end_node_type":["disease","symptom"]
+      },
+      "interaction_with_drug":{
+        "type":"undirectional",
+        "define":"药物相互作用",
+        "properties":{
+          "interaction":["string","交互关系",""]
+        },
+        "end_node_type":["drug"]
+      },
+      "production":{
+        "type":"directional",
+        "define":"药物对于产品",
+        "properties":{},
+        "end_node_type":["drug_product"]
+      }
+    }
+  },
+  "ingredient":{
+    "properties":{
+      "ID":["string","成分ID","IG000000"],
+      "name":["string","中文名称",""],
+      "eng_name":["string","英文名称",""],
+      "synonym_name":["string","别名",""],
+      "type":["string","成分类型",""],
+      "chemical_struction":["string","化学结构",""],
+      "external_ids":["string","药物成分链接",""]
+    },
+    "relations":{}
+  },
+  "drug_product":{
+    "properties":{
+      "ID":["string","药品产品ID","DP000000"],
+      "name":["string","中文名称",""],
+      "eng_name":["string","英文名称",""],
+      "synonym_name":["string","别名",""],
+      "brand_name":["string","商品名",""],
+      "labeller":["string","生产厂家",""],
+      "approved_number":["string","批准文号",""],
+      "drug_based_code_cn":["string","药物本位码",""]
+    },
+    "relations":{}
+  },
+
+  "symptom":{
+    "properties":{
+      "ID":["string","症状ID","以SY开头，后续为6位数字"],
+      "name":["string","症状名称","如感冒"],
+      "eng_name":["string","症状英文名称","如cold"],
+      "synonym_name":["string","症状别名",""],
+      "detail":["string","症状描述",""]
+    },
+    "relations":{
+      "occurs_in":{
+        "type":"directional",
+        "define":"发病人群",
+        "properties":{
+          "prevalence":["string","人群的患病率","可用易患、仅患"]
+        },
+        "end_node_type":["human_group"],
+        "comment":"链接到可能的发病人群分类节点（human_group），人群本体分类按照年龄、常见病史等分类。如“糖尿”-->“糖调节受损史人群”，“高血压人群”"
+      },
+      "find_sites":{
+        "type":"directional",
+        "define":"发病部位",
+        "properties":{
+          "prime":["string","是否是主要发病部位",""],
+          "prevalence":["string","该类症状在该部位发生病变的概率","可用易患、仅患"]
+        },
+        "end_node_type":["human_body"],
+        "comment":"链接到人的身体部位(human_body),如“腹泻”-->“肠道”"
+      },
+      "related_diseases":{
+        "type":"undirectional",
+        "reversed_relation":{"disease":"related_symptoms"},
+        "define":"相关疾病",
+        "properties":{},
+        "end_node_type":["disease"],
+        "comment":""
+      }
+
+    }
+  },
+  "test":{
+    "properties":{},
+    "relations":{}
+  },
+
+"comment":"知识图谱的属性和关系节点定义文件",
+"verison":"0.0.1"
+}
